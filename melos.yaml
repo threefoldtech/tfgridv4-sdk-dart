@@ -1,0 +1,7 @@
+name: tfgridv4_sdk_dart_monorepo
+
+packages:
+  - packages/**
+
+scripts:
+  

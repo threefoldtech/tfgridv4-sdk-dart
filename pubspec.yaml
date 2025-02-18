@@ -1,0 +1,13 @@
+name: tfgridv4_sdk_dart
+environment:
+  sdk: ^3.5.3
+
+workspace:
+  - packages/registrar_client
+
+dev_dependencies:
+  lints: ^5.0.0
+  test: ^1.25.15
+
+dependencies:
+  melos: ^6.3.2
