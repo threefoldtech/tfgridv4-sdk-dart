@@ -1,4 +1,3 @@
-
 import 'package:registrar_client/registrar_client.dart';
 import 'package:test/test.dart';
 import 'package:pinenacl/ed25519.dart';
@@ -112,11 +111,12 @@ void main() async {
 
     test('Report node uptime', () async {
       final uptime = ReportUptimeRequest(
-        uptime: 100,
-        timestamp: DateTime.now().toIso8601String(),
+        uptime: Duration(hours: 1, minutes: 30),
+        timestamp: DateTime.now(),
       );
 
-      final response = await client.nodes.reportNodeUptime(twinID, nodeID, uptime);
+      final response =
+          await client.nodes.reportNodeUptime(twinID, nodeID, uptime);
       expect(response, isNotNull);
 
       final node = await client.nodes.get(nodeID);

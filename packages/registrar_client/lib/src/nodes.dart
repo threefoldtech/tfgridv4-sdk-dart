@@ -36,7 +36,7 @@ class Nodes {
   Future<dynamic> reportNodeUptime(
       int twinID, int nodeID, ReportUptimeRequest uptime) async {
     final header = createAuthHeader(twinID, _client.privateKey);
-    final response = await _client.patch(
+    final response = await _client.post(
         path: '$path$nodeID/uptime', body: uptime.toJson(), headers: header);
     return response;
   }

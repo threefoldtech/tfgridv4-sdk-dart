@@ -295,10 +295,11 @@ class ReportUptimeRequest {
   final String timestamp;
 
   ReportUptimeRequest({
-    required this.uptime,
-    required this.timestamp,
-  });
-
+    required Duration uptime,
+    required DateTime timestamp,
+  })  : uptime = uptime.inMicroseconds * 1000,
+        timestamp =
+            timestamp.toUtc().toIso8601String();
   Map<String, dynamic> toJson() {
     return {
       'uptime': uptime,
