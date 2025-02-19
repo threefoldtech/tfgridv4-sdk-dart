@@ -13,7 +13,7 @@ class Farms {
     final header = createAuthHeader(farm.twinID, _client.privateKey);
     final response =
         await _client.post(path: path, body: farm.toJson(), headers: header);
-    return response;
+    return response['farm_id'];
   }
 
   Future<Farm> get(int farmID) async {

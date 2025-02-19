@@ -13,7 +13,7 @@ class Nodes {
     final header = createAuthHeader(node.twinID, _client.privateKey);
     final response =
         await _client.post(path: path, body: node.toJson(), headers: header);
-    return response;
+    return response['node_id'];
   }
 
   Future<Node> get(int nodeID) async {
