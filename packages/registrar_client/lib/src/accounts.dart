@@ -4,7 +4,7 @@ import 'utils.dart';
 
 class Accounts {
   final RegistrarClient _client;
-  final String path = '/accounts';
+  final String path = '/accounts/';
   Accounts(this._client);
 
   Future<Account> create({List<String>? relays, String? rmbEncKey}) async {
@@ -39,7 +39,7 @@ class Accounts {
   Future<dynamic> update(int twinID, AccountUpdateRequest body) async {
     final header = createAuthHeader(twinID, _client.privateKey);
     final response = await _client.patch(
-        path: '$path/update', body: body.toJson(), headers: header);
+        path: '$path$twinID', body: body.toJson(), headers: header);
     return response;
   }
 }

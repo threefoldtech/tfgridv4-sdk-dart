@@ -5,7 +5,7 @@ import 'utils.dart';
 
 class Nodes {
   final RegistrarClient _client;
-  final String path = '/nodes';
+  final String path = '/nodes/';
 
   Nodes(this._client);
 
@@ -17,7 +17,7 @@ class Nodes {
   }
 
   Future<Node> get(int nodeID) async {
-    final response = await _client.get(path: '$path/$nodeID');
+    final response = await _client.get(path: '$path$nodeID');
     return Node.fromJson(response);
   }
 
@@ -29,7 +29,7 @@ class Nodes {
   Future<dynamic> update(int twinID, int nodeID, UpdateNodeRequest node) async {
     final header = createAuthHeader(twinID, _client.privateKey);
     final response = await _client.patch(
-        path: '$path/$nodeID', body: node.toJson(), headers: header);
+        path: '$path$nodeID', body: node.toJson(), headers: header);
     return response;
   }
 
@@ -37,7 +37,7 @@ class Nodes {
       int twinID, int nodeID, ReportUptimeRequest uptime) async {
     final header = createAuthHeader(twinID, _client.privateKey);
     final response = await _client.patch(
-        path: '$path/$nodeID/uptime', body: uptime.toJson(), headers: header);
+        path: '$path$nodeID/uptime', body: uptime.toJson(), headers: header);
     return response;
   }
 }

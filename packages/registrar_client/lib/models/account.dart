@@ -2,19 +2,19 @@ import 'farm.dart';
 
 class Account {
   final String createdAt;
-  final List<Farm> farms;
+  final List<Farm>? farms;
   final String publicKey;
-  final List<String> relays;
-  final String rmbEncKey;
+  final List<String>? relays;
+  final String? rmbEncKey;
   final int twinID;
   final String updatedAt;
 
   Account({
     required this.createdAt,
-    required this.farms,
+    this.farms,
     required this.publicKey,
-    required this.relays,
-    required this.rmbEncKey,
+    this.relays,
+    this.rmbEncKey,
     required this.twinID,
     required this.updatedAt,
   });
@@ -22,10 +22,13 @@ class Account {
   factory Account.fromJson(Map<String, dynamic> json) {
     return Account(
       createdAt: json['created_at'],
-      farms:
-          (json['farms'] as List).map((farm) => Farm.fromJson(farm)).toList(),
+      farms: json['farms'] != null
+          ? (json['farms'] as List).map((farm) => Farm.fromJson(farm)).toList()
+          : null,
       publicKey: json['public_key'],
-      relays: json['relays'],
+      relays: json['relays'] != null
+          ? List<String>.from(json['relays'])
+          : null ,
       rmbEncKey: json['rmb_enc_key'],
       twinID: json['twin_id'],
       updatedAt: json['updated_at'],

@@ -5,7 +5,7 @@ class Farm {
   final bool dedicated;
   final int? farmID;
   final String farmName;
-  final List<Node> nodes;
+  final List<Node>? nodes;
   final int twinID;
   final String? updatedAt;
 
@@ -14,7 +14,7 @@ class Farm {
     required this.dedicated,
     this.farmID,
     required farmName,
-    required this.nodes,
+    this.nodes,
     required twinID,
     this.updatedAt,
   })  : farmName = _validateFarmName(farmName),
@@ -26,8 +26,9 @@ class Farm {
       dedicated: json['dedicated'],
       farmID: json['farm_id'],
       farmName: json['farm_name'],
-      nodes:
-          (json['nodes'] as List).map((node) => Node.fromJson(node)).toList(),
+      nodes: json['nodes'] != null
+          ? (json['nodes'] as List).map((node) => Node.fromJson(node)).toList()
+          : null,
       twinID: json['twin_id'],
       updatedAt: json['updated_at'],
     );
@@ -39,7 +40,7 @@ class Farm {
       'dedicated': dedicated,
       'farm_id': farmID,
       'farm_name': farmName,
-      'nodes': nodes,
+      'nodes': nodes??[],
       'twin_id': twinID,
       'updated_at': updatedAt,
     };

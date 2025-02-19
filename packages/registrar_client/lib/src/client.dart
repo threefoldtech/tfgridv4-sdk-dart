@@ -27,15 +27,11 @@ class RegistrarClient {
   }
 
   dynamic _handleResponse(http.Response response) {
-    if (response.statusCode >= 200 && response.statusCode < 300) {
+    if (response.statusCode >= 200 && response.statusCode < 400) {
       return jsonDecode(response.body);
     } else {
-      final Map<String, dynamic> errorBody = jsonDecode(response.body);
-      final errorMessage = errorBody['error'] ??
-          errorBody['message'] ??
-          'Unknown error occurred';
       throw Exception(
-        'Request failed with status: ${response.statusCode}, error: $errorMessage',
+        'Request failed with status: ${response.statusCode}',
       );
     }
   }
@@ -87,9 +83,12 @@ class RegistrarClient {
     return _handleResponse(response);
   }
 
-  static String _buildUrl(String Url, String path, Map<String, dynamic> query) {
-    final uri = Uri.parse('$Url$path');
-    final updatedUri = uri.replace(queryParameters: query);
+  static String _buildUrl(String url, String path, Map<String, dynamic> query) {
+    final uri = Uri.parse('$url$path');
+    final updatedUri = uri.replace(queryParameters:  query
+      .map((key, value) => MapEntry(key, value?.toString()))
+    ..removeWhere((key, value) => value == null),
+    );
     return updatedUri.toString();
   }
 

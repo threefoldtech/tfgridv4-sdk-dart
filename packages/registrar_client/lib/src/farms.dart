@@ -5,11 +5,11 @@ import 'client.dart';
 
 class Farms {
   final RegistrarClient _client;
-  final String path = '/farms';
+  final String path = '/farms/';
 
   Farms(this._client);
 
-  Future<int> create(int twinID, Farm farm) async {
+  Future<int> create(Farm farm) async {
     final header = createAuthHeader(farm.twinID, _client.privateKey);
     final response =
         await _client.post(path: path, body: farm.toJson(), headers: header);
@@ -17,7 +17,7 @@ class Farms {
   }
 
   Future<Farm> get(int farmID) async {
-    final response = await _client.get(path: '$path/$farmID');
+    final response = await _client.get(path: '$path$farmID');
     return Farm.fromJson(response);
   }
 
@@ -29,7 +29,7 @@ class Farms {
   Future<dynamic> update(int twinID, int farmID, String farmName) async {
     final header = createAuthHeader(twinID, _client.privateKey);
     final response = await _client.patch(
-        path: '$path/$farmID', body: {'farm_name': farmName}, headers: header);
+        path: '$path$farmID', body: {'farm_name': farmName}, headers: header);
     return response;
   }
 }

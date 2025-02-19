@@ -20,7 +20,7 @@ abstract class NodeBase {
   Map<String, dynamic> toJson() {
     return {
       'farm_id': farmID,
-      'interfaces': interfaces.map((interface) => interface.toJson()).toList(),
+      'Interfaces': interfaces.map((interface) => interface.toJson()).toList(),
       'location': location.toJson(),
       'resources': resources.toJson(),
       'secure_boot': secureBoot,
@@ -65,9 +65,9 @@ class Node extends NodeBase {
   factory Node.fromJson(Map<String, dynamic> json) {
     return Node(
       farmID: json['farm_id'],
-      interfaces: (json['interfaces'] as List)
-          .map((interface) => Interface.fromJson(interface))
-          .toList(),
+      interfaces:  (json['Interfaces'] as List)
+              .map((interface) => Interface.fromJson(interface))
+              .toList(),
       location: Location.fromJson(json['location']),
       resources: Resources.fromJson(json['resources']),
       secureBoot: json['secure_boot'],
@@ -78,9 +78,11 @@ class Node extends NodeBase {
       nodeID: json['node_id'],
       twinID: json['twin_id'],
       updatedAt: json['updated_at'],
-      uptime: (json['uptime'] as List)
-          .map((uptime) => UptimeReport.fromJson(uptime))
-          .toList(),
+      uptime: json['uptime'] != null
+          ? (json['uptime'] as List)
+              .map((uptime) => UptimeReport.fromJson(uptime))
+              .toList()
+          : [],
     );
   }
 }
@@ -98,7 +100,7 @@ class Interface {
 
   factory Interface.fromJson(Map<String, dynamic> json) {
     return Interface(
-      ip: json['ip'],
+      ip: json['ips'],
       mac: json['mac'],
       name: json['name'],
     );
@@ -106,7 +108,7 @@ class Interface {
 
   Map<String, dynamic> toJson() {
     return {
-      'ip': ip,
+      'ips': ip,
       'mac': mac,
       'name': name,
     };
