@@ -36,7 +36,7 @@ class Account {
 class AccountCreationRequest {
   final String publicKey;
   final String signature;
-  final String timestamp;
+  final int timestamp;
   final List<String>? relays;
   final String? rmbEncKey;
 

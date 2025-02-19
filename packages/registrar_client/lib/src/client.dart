@@ -13,16 +13,31 @@ class RegistrarClient {
   late final Zos zos;
   late final Nodes nodes;
   late final Farms farms;
-  late final Accounts accounts;
+  late Accounts accounts;
 
   RegistrarClient({
-    required this.baseUrl,
-    required this.privateKey,
-  }) {
+    required String baseUrl,
+    required String privateKey,
+  })  : baseUrl = _validateBaseUrl(baseUrl),
+        privateKey = _validatePrivateKey(privateKey) {
     zos = Zos(this);
     nodes = Nodes(this);
     farms = Farms(this);
     accounts = Accounts(this);
+  }
+
+  dynamic _handleResponse(http.Response response) {
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return jsonDecode(response.body);
+    } else {
+      final Map<String, dynamic> errorBody = jsonDecode(response.body);
+      final errorMessage = errorBody['error'] ??
+          errorBody['message'] ??
+          'Unknown error occurred';
+      throw Exception(
+        'Request failed with status: ${response.statusCode}, error: $errorMessage',
+      );
+    }
   }
 
   Future<dynamic> post(
@@ -42,7 +57,7 @@ class RegistrarClient {
       Map<String, dynamic>? query,
       Map<String, String>? headers}) async {
     final response = await http.get(
-      Uri.parse(_buildUrl(path, query ?? {})),
+      Uri.parse(_buildUrl(this.baseUrl, path, query ?? {})),
       headers: headers,
     );
     return _handleResponse(response);
@@ -72,23 +87,23 @@ class RegistrarClient {
     return _handleResponse(response);
   }
 
-  String _buildUrl(String path, Map<String, dynamic> query) {
-    final uri = Uri.parse('$baseUrl$path');
+  static String _buildUrl(String Url, String path, Map<String, dynamic> query) {
+    final uri = Uri.parse('$Url$path');
     final updatedUri = uri.replace(queryParameters: query);
     return updatedUri.toString();
   }
 
-  dynamic _handleResponse(http.Response response) {
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
-      final Map<String, dynamic> errorBody = jsonDecode(response.body);
-      final errorMessage = errorBody['error'] ??
-          errorBody['message'] ??
-          'Unknown error occurred';
-      throw Exception(
-        'Request failed with status: ${response.statusCode}, error: $errorMessage',
-      );
+  static String _validateBaseUrl(String baseUrl) {
+    if (baseUrl.isEmpty || !Uri.tryParse(baseUrl)!.isAbsolute) {
+      throw ArgumentError('Base URL must be a valid URL');
     }
+    return baseUrl;
+  }
+
+  static String _validatePrivateKey(String privateKey) {
+    if (privateKey.isEmpty) {
+      throw ArgumentError('Private key cannot be empty');
+    }
+    return privateKey;
   }
 }

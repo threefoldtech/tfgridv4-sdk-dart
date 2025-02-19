@@ -287,3 +287,20 @@ class NodeFilter {
     };
   }
 }
+
+class ReportUptimeRequest {
+  final int uptime;
+  final String timestamp;
+
+  ReportUptimeRequest({
+    required this.uptime,
+    required this.timestamp,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'uptime': uptime,
+      'timestamp': timestamp,
+    };
+  }
+}
