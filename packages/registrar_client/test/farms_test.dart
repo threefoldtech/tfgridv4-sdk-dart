@@ -15,8 +15,7 @@ void main() {
       final account = await client.accounts.create();
       twinID = account.twinID;
       final farmName = '${DateTime.now()} - farm';
-      final farmIDCreated = await client.farms
-          .create(Farm(dedicated: true, farmName: farmName, twinID: twinID));
+      final farmIDCreated = await client.farms.create(farmName, true, twinID);
       expect(farmID, isNotNull);
       expect(farmID, isA<int>());
       farmID = farmIDCreated;

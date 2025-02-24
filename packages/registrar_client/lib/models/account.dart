@@ -26,9 +26,7 @@ class Account {
           ? (json['farms'] as List).map((farm) => Farm.fromJson(farm)).toList()
           : null,
       publicKey: json['public_key'],
-      relays: json['relays'] != null
-          ? List<String>.from(json['relays'])
-          : null ,
+      relays: json['relays'] != null ? List<String>.from(json['relays']) : null,
       rmbEncKey: json['rmb_enc_key'],
       twinID: json['twin_id'],
       updatedAt: json['updated_at'],

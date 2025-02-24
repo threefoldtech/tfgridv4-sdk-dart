@@ -85,9 +85,10 @@ class RegistrarClient {
 
   static String _buildUrl(String url, String path, Map<String, dynamic> query) {
     final uri = Uri.parse('$url$path');
-    final updatedUri = uri.replace(queryParameters:  query
-      .map((key, value) => MapEntry(key, value?.toString()))
-    ..removeWhere((key, value) => value == null),
+    final updatedUri = uri.replace(
+      queryParameters:
+          query.map((key, value) => MapEntry(key, value?.toString()))
+            ..removeWhere((key, value) => value == null),
     );
     return updatedUri.toString();
   }

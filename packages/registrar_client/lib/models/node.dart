@@ -15,7 +15,15 @@ abstract class NodeBase {
     this.secureBoot,
     required this.serialNumber,
     this.virtualized,
-  });
+  }) {
+    _validateSerialNumber(serialNumber);
+  }
+
+  void _validateSerialNumber(String serialNumber) {
+    if (serialNumber.isEmpty) {
+      throw ArgumentError('Serial number cannot be empty');
+    }
+  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -65,9 +73,9 @@ class Node extends NodeBase {
   factory Node.fromJson(Map<String, dynamic> json) {
     return Node(
       farmID: json['farm_id'],
-      interfaces:  (json['Interfaces'] as List)
-              .map((interface) => Interface.fromJson(interface))
-              .toList(),
+      interfaces: (json['Interfaces'] as List)
+          .map((interface) => Interface.fromJson(interface))
+          .toList(),
       location: Location.fromJson(json['location']),
       resources: Resources.fromJson(json['resources']),
       secureBoot: json['secure_boot'],
@@ -88,19 +96,19 @@ class Node extends NodeBase {
 }
 
 class Interface {
-  final String ip;
+  final String ips;
   final String mac;
   final String name;
 
   Interface({
-    required this.ip,
+    required this.ips,
     required this.mac,
     required this.name,
   });
 
   factory Interface.fromJson(Map<String, dynamic> json) {
     return Interface(
-      ip: json['ips'],
+      ips: json['ips'],
       mac: json['mac'],
       name: json['name'],
     );
@@ -108,7 +116,7 @@ class Interface {
 
   Map<String, dynamic> toJson() {
     return {
-      'ips': ip,
+      'ips': ips,
       'mac': mac,
       'name': name,
     };
@@ -291,19 +299,18 @@ class NodeFilter {
 }
 
 class ReportUptimeRequest {
-  final int uptime;
-  final String timestamp;
+  final Duration uptime;
+  final DateTime timestamp;
 
   ReportUptimeRequest({
-    required Duration uptime,
-    required DateTime timestamp,
-  })  : uptime = uptime.inMicroseconds * 1000,
-        timestamp =
-            timestamp.toUtc().toIso8601String();
+    required Duration this.uptime,
+    required DateTime this.timestamp,
+  });
+
   Map<String, dynamic> toJson() {
     return {
-      'uptime': uptime,
-      'timestamp': timestamp,
+      'uptime': uptime.inSeconds,
+      'timestamp': timestamp.toUtc().toIso8601String(),
     };
   }
 }

@@ -40,21 +40,22 @@ class Farm {
       'dedicated': dedicated,
       'farm_id': farmID,
       'farm_name': farmName,
-      'nodes': nodes??[],
+      'nodes': nodes ?? [],
       'twin_id': twinID,
       'updated_at': updatedAt,
     };
   }
 
   static String _validateFarmName(String farmName) {
-    if (farmName.isEmpty) {
-      throw ArgumentError('Farm name cannot be empty');
+    if (farmName.isEmpty || farmName.length > 40) {
+      throw ArgumentError(
+          'Farm name cannot be empty and must be less than or equal to 40 characters');
     }
     return farmName;
   }
 
   static int _validateTwinId(int twinId) {
-    if (twinId < 0) {
+    if (twinId <= 0) {
       throw ArgumentError('Twin ID cannot be negative');
     }
     return twinId;

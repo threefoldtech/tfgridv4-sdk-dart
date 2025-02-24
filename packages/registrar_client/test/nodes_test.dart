@@ -17,8 +17,7 @@ void main() async {
       twinID = account.twinID;
 
       final farmName = '${DateTime.now()} - farm';
-      final farmIDCreated = await client.farms.create(
-          Farm(dedicated: true, farmName: farmName, nodes: [], twinID: twinID));
+      final farmIDCreated = await client.farms.create(farmName, true, twinID);
       expect(farmID, isNotNull);
       expect(farmID, isA<int>());
       farmID = farmIDCreated;
@@ -30,12 +29,12 @@ void main() async {
           Interface(
             name: 'eth0',
             mac: '00:11:22:33:44:55',
-            ip: '192.168.1.100',
+            ips: '192.168.1.100',
           ),
           Interface(
             name: 'wlan0',
             mac: '66:77:88:99:AA:BB',
-            ip: '192.168.1.101',
+            ips: '192.168.1.101',
           ),
         ],
         location: Location(
