@@ -8,6 +8,7 @@ class Farm {
   final List<Node>? nodes;
   final int twinID;
   final String? updatedAt;
+  final String? stellarAddress;
 
   Farm({
     this.createdAt,
@@ -16,6 +17,7 @@ class Farm {
     required farmName,
     this.nodes,
     required twinID,
+    this.stellarAddress,
     this.updatedAt,
   })  : farmName = _validateFarmName(farmName),
         twinID = _validateTwinId(twinID);
@@ -30,6 +32,7 @@ class Farm {
           ? (json['nodes'] as List).map((node) => Node.fromJson(node)).toList()
           : null,
       twinID: json['twin_id'],
+      stellarAddress: json['stellar_address'],
       updatedAt: json['updated_at'],
     );
   }
@@ -42,6 +45,7 @@ class Farm {
       'farm_name': farmName,
       'nodes': nodes ?? [],
       'twin_id': twinID,
+      'stellar_address': stellarAddress,
       'updated_at': updatedAt,
     };
   }
