@@ -28,10 +28,10 @@ class Farms {
   }
 
   Future<dynamic> update(
-      int twinID, int farmID, String farmName, String? stellarAddress) async {
+      int twinID, int farmID, String? farmName, String? stellarAddress) async {
     final header = createAuthHeader(twinID, _client.privateKey);
     final body = {
-      'farm_name': farmName,
+      if (farmName != null) 'farm_name': farmName,
       if (stellarAddress != null) 'stellar_address': stellarAddress
     };
     final response =
