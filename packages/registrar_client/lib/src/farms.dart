@@ -27,10 +27,15 @@ class Farms {
     return List<Farm>.from(response.map((farm) => Farm.fromJson(farm)));
   }
 
-  Future<dynamic> update(int twinID, int farmID, String farmName) async {
+  Future<dynamic> update(
+      int twinID, int farmID, String farmName, String? stellarAddress) async {
     final header = createAuthHeader(twinID, _client.privateKey);
-    final response = await _client.patch(
-        path: '$path/$farmID', body: {'farm_name': farmName}, headers: header);
+    final body = {
+      'farm_name': farmName,
+      if (stellarAddress != null) 'stellar_address': stellarAddress
+    };
+    final response =
+        await _client.patch(path: '$path/$farmID', body: body, headers: header);
     return response;
   }
 }
