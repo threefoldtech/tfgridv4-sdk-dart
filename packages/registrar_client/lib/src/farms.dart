@@ -27,8 +27,11 @@ class Farms {
     return List<Farm>.from(response.map((farm) => Farm.fromJson(farm)));
   }
 
-  Future<dynamic> update(
-      int twinID, int farmID, {String? farmName, String? stellarAddress}) async {
+  Future<dynamic> update(int twinID, int farmID,
+      {String? farmName, String? stellarAddress}) async {
+    if (farmName == null && stellarAddress == null) {
+      return;
+    }
     final header = createAuthHeader(twinID, _client.privateKey);
     final body = {
       if (farmName != null) 'farm_name': farmName,
