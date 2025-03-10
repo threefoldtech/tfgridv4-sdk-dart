@@ -31,7 +31,7 @@ class RegistrarClient {
       return jsonDecode(response.body);
     } else {
       throw Exception(
-        'Request failed with status: ${response.statusCode}',
+        'Request failed with status: ${response.statusCode} - ${response.body}',
       );
     }
   }
