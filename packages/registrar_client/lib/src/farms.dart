@@ -9,9 +9,9 @@ class Farms {
 
   Farms(this._client);
 
-  Future<int> create(String farmName, bool dedicated, int twinID) async {
+  Future<int> create(String farmName, bool dedicated, String stellarAddress, int twinID) async {
     final header = createAuthHeader(twinID, _client.privateKey);
-    final farm = Farm(dedicated: dedicated, farmName: farmName, twinID: twinID);
+    final farm = Farm(dedicated: dedicated, farmName: farmName, stellarAddress: stellarAddress, twinID: twinID);
     final response = await _client.post(
         path: '$path/', body: farm.toJson(), headers: header);
     return response['farm_id'];
