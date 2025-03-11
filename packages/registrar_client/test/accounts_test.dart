@@ -1,18 +1,17 @@
-import 'dart:convert';
-
-import 'package:pinenacl/ed25519.dart';
+import 'package:bip39/bip39.dart';
 import 'package:registrar_client/src/utils.dart';
+import 'package:signer/signer.dart';
 import 'package:test/test.dart';
 import 'package:registrar_client/registrar_client.dart';
 
 void main() {
   group('Test Account', () {
     int twinID = 0;
-    final privateKey = SigningKey.generate().seed;
+
+    final mnemonic = generateMnemonic();
 
     final client = RegistrarClient(
-        baseUrl: 'http://registrar/v1',
-        privateKey: base64Encode(privateKey));
+        baseUrl: 'http://registrar/v1', mnemonicOrSeed: mnemonic);
 
     test('Create Account', () async {
       final account = await client.accounts.create();
@@ -32,10 +31,10 @@ void main() {
     });
 
     test('Get Account by PublicKey', () async {
-      final account = await client.accounts.getByPublicKey(derivePublicKey(base64Encode(privateKey)));
+      final account = await client.accounts
+          .getByPublicKey(await derivePublicKey(mnemonic, KPType.sr25519));
       expect(account, isNotNull);
       expect(account.twinID, twinID);
-
     });
 
     test('Update Account', () async {

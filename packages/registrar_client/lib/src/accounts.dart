@@ -8,10 +8,13 @@ class Accounts {
   Accounts(this._client);
 
   Future<Account> create({List<String>? relays, String? rmbEncKey}) async {
+    String publicKey =
+        await derivePublicKey(_client.mnemonicOrSeed, _client.keypairType);
+    final signer =
+        await createSigner(_client.mnemonicOrSeed, _client.keypairType);
     int timestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-    String publicKey = derivePublicKey(_client.privateKey);
     String signature =
-        createSignatureWithPublicKey(timestamp, publicKey, _client.privateKey);
+        await createSignatureWithPublicKey(timestamp, publicKey, signer);
     final AccountCreationRequest body = AccountCreationRequest(
       publicKey: publicKey,
       signature: signature,
@@ -37,7 +40,8 @@ class Accounts {
   }
 
   Future<dynamic> update(int twinID, AccountUpdateRequest body) async {
-    final header = createAuthHeader(twinID, _client.privateKey);
+    final header = await createAuthHeader(
+        twinID, _client.mnemonicOrSeed, _client.keypairType);
     final response = await _client.patch(
         path: '$path/$twinID', body: body.toJson(), headers: header);
     return response;
