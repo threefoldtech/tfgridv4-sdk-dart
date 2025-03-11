@@ -9,9 +9,15 @@ class Farms {
 
   Farms(this._client);
 
-  Future<int> create(String farmName, bool dedicated, String stellarAddress, int twinID) async {
-    final header = createAuthHeader(twinID, _client.privateKey);
-    final farm = Farm(dedicated: dedicated, farmName: farmName, stellarAddress: stellarAddress, twinID: twinID);
+  Future<int> create(String farmName, bool dedicated, String stellarAddress,
+      int twinID) async {
+    final header = await createAuthHeader(
+        twinID, _client.mnemonicOrSeed, _client.keypairType);
+    final farm = Farm(
+        dedicated: dedicated,
+        farmName: farmName,
+        stellarAddress: stellarAddress,
+        twinID: twinID);
     final response = await _client.post(
         path: '$path/', body: farm.toJson(), headers: header);
     return response['farm_id'];
@@ -32,7 +38,8 @@ class Farms {
     if (farmName == null && stellarAddress == null) {
       return;
     }
-    final header = createAuthHeader(twinID, _client.privateKey);
+    final header = await createAuthHeader(
+        twinID, _client.mnemonicOrSeed, _client.keypairType);
     final body = {
       if (farmName != null) 'farm_name': farmName,
       if (stellarAddress != null) 'stellar_address': stellarAddress

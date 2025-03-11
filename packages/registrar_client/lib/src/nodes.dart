@@ -10,7 +10,8 @@ class Nodes {
   Nodes(this._client);
 
   Future<int> create(NodeRegistrationRequest node) async {
-    final header = createAuthHeader(node.twinID, _client.privateKey);
+    final header = await createAuthHeader(
+        node.twinID, _client.mnemonicOrSeed, _client.keypairType);
     final response = await _client.post(
         path: '$path/', body: node.toJson(), headers: header);
     return response['node_id'];
@@ -27,7 +28,8 @@ class Nodes {
   }
 
   Future<dynamic> update(int twinID, int nodeID, UpdateNodeRequest node) async {
-    final header = createAuthHeader(twinID, _client.privateKey);
+    final header = await createAuthHeader(
+        twinID, _client.mnemonicOrSeed, _client.keypairType);
     final response = await _client.patch(
         path: '$path/$nodeID', body: node.toJson(), headers: header);
     return response;
@@ -35,7 +37,8 @@ class Nodes {
 
   Future<dynamic> reportNodeUptime(
       int twinID, int nodeID, ReportUptimeRequest uptime) async {
-    final header = createAuthHeader(twinID, _client.privateKey);
+    final header = await createAuthHeader(
+        twinID, _client.mnemonicOrSeed, _client.keypairType);
     final response = await _client.post(
         path: '$path/$nodeID/uptime', body: uptime.toJson(), headers: header);
     return response;

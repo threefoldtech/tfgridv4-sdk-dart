@@ -1,30 +1,43 @@
 import 'dart:convert';
-import 'package:pinenacl/ed25519.dart';
+import 'package:signer/signer.dart';
+import 'package:hex/hex.dart';
 
-String createSignatureForChallenge(String challenge, String privateKey) {
-  final privateKeyBytes = base64Decode(privateKey);
-  final signature = SigningKey(seed: privateKeyBytes.sublist(0, 32))
-      .sign(Uint8List.fromList(challenge.codeUnits));
-  return base64Encode(signature.signature);
+Future<Signer> createSigner(String mnemonicOrSeed, KPType keypairType) async {
+  final Signer signer = Signer();
+  await signer.fromUri(mnemonicOrSeed, keypairType);
+  return signer;
 }
 
-String createSignatureWithPublicKey(
-    int timestamp, String publicKey, String privateKey) {
+String createSignatureForChallenge(Signer signer, String challenge) {
+  final signature = signer.sign(challenge);
+  return base64Encode(HEX.decode(signature));
+}
+
+Future<String> createSignatureWithPublicKey(
+    int timestamp, String publicKey, Signer signer) async {
   final challenge = '$timestamp:$publicKey';
-  return createSignatureForChallenge(challenge, privateKey);
+  return await createSignatureForChallenge(signer, challenge);
 }
 
-Map<String, String> createAuthHeader(int twinID, String privateKey) {
+Future<Map<String, String>> createAuthHeader(
+    int twinID, String mnemonicOrSeed, KPType keypairType) async {
+  final signer = await createSigner(mnemonicOrSeed, keypairType);
   int timestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
   final challenge = '$timestamp:$twinID';
-  final signature = createSignatureForChallenge(challenge, privateKey);
+  final signature = await createSignatureForChallenge(signer, challenge);
   return {
     'X-Auth': '${base64Encode(challenge.codeUnits)}:${signature}',
   };
 }
 
-String derivePublicKey(String privateKey) {
-  final privateKeyBytes = base64Decode(privateKey);
-  final publicKey = SigningKey(seed: privateKeyBytes.sublist(0, 32)).verifyKey;
+Future<String> derivePublicKey(
+    String mnemonicOrSeed, KPType keypairType) async {
+  final signer = await createSigner(mnemonicOrSeed, keypairType);
+  final publicKey = signer.keypair!.publicKey.bytes;
   return base64Encode(publicKey);
+}
+
+bool isValidSeed(String seed) {
+  final RegExp hexRegex = RegExp(r'(0[xX])?[0-9a-fA-F]+');
+  return hexRegex.hasMatch(seed);
 }

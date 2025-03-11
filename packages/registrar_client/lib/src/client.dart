@@ -1,4 +1,7 @@
+import 'package:bip39/bip39.dart';
 import 'package:http/http.dart' as http;
+import 'package:registrar_client/src/utils.dart';
+import 'package:signer/signer.dart';
 import 'dart:convert';
 
 import 'nodes.dart';
@@ -8,7 +11,8 @@ import 'accounts.dart';
 
 class RegistrarClient {
   final String baseUrl;
-  final String privateKey;
+  final String mnemonicOrSeed;
+  final KPType keypairType;
 
   late final Zos zos;
   late final Nodes nodes;
@@ -17,9 +21,10 @@ class RegistrarClient {
 
   RegistrarClient({
     required String baseUrl,
-    required String privateKey,
+    required String mnemonicOrSeed,
+    this.keypairType = KPType.sr25519,
   })  : baseUrl = _validateBaseUrl(baseUrl),
-        privateKey = _validatePrivateKey(privateKey) {
+        mnemonicOrSeed = _validateSecret(mnemonicOrSeed) {
     zos = Zos(this);
     nodes = Nodes(this);
     farms = Farms(this);
@@ -100,10 +105,21 @@ class RegistrarClient {
     return baseUrl;
   }
 
-  static String _validatePrivateKey(String privateKey) {
-    if (privateKey.isEmpty) {
-      throw ArgumentError('Private key cannot be empty');
+  static String _validateSecret(String mnemonicOrSeed) {
+    if (mnemonicOrSeed.isEmpty) {
+      throw ArgumentError("Mnemonic or secret should be provided");
+    } else if (!validateMnemonic(mnemonicOrSeed)) {
+      if (mnemonicOrSeed.contains(" ")) {
+        throw FormatException("Invalid mnemonic! Must be bip39 compliant");
+      }
+      if (!mnemonicOrSeed.startsWith("0x")) {
+        mnemonicOrSeed = '0x$mnemonicOrSeed';
+      }
+
+      if (!isValidSeed(mnemonicOrSeed)) {
+        throw FormatException("Invalid secret seed");
+      }
     }
-    return privateKey;
+    return mnemonicOrSeed;
   }
 }

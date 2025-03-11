@@ -1,6 +1,4 @@
-import 'dart:convert';
-
-import 'package:pinenacl/ed25519.dart';
+import 'package:bip39/bip39.dart';
 import 'package:test/test.dart';
 import 'package:registrar_client/registrar_client.dart';
 
@@ -9,13 +7,15 @@ void main() {
     int farmID = 0;
     int twinID = 0;
     final client = RegistrarClient(
-        baseUrl: 'http://registrar/v1',
-        privateKey: base64Encode(SigningKey.generate().seed));
+        baseUrl: 'http://registrar/v1', mnemonicOrSeed: generateMnemonic());
     test('Create Farm', () async {
       final account = await client.accounts.create();
       twinID = account.twinID;
       final farmName = '${DateTime.now()} - farm';
-      final farmIDCreated = await client.farms.create(farmName, true, twinID);
+      final stellarAddress =
+          "GC6CG2ME7UCJ56CEQ223QWWZ6N3UGTSXVNRJGDTE2DXUO4NQBLXZRWU5";
+      final farmIDCreated =
+          await client.farms.create(farmName, true, stellarAddress, twinID);
       expect(farmID, isNotNull);
       expect(farmID, isA<int>());
       farmID = farmIDCreated;
@@ -44,7 +44,8 @@ void main() {
 
     test('Update Farm', () async {
       final farmName = '${DateTime.now()} - farm';
-      final response = await client.farms.update(twinID, farmID, farmName);
+      final response =
+          await client.farms.update(twinID, farmID, farmName: farmName);
       expect(response, isNotNull);
 
       final farm = await client.farms.get(farmID);
