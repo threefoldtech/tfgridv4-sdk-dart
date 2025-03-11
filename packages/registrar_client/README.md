@@ -19,7 +19,7 @@ void main() async{
 
      final client = RegistrarClient(
         baseUrl: 'https://registrar.dev4.grid.tf/v1',
-        privateKey: 'your_private_key');
+        mnemonicOrSeed: 'your mnemonic or hex seed');
 
     final account = await client.account.create(relays: ['relay1', 'relay2'] , rmbEncKey: 'rmb_enc_key');
 
