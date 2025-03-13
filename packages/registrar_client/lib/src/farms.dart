@@ -9,7 +9,8 @@ class Farms {
 
   Farms(this._client);
 
-  Future<int> create(String farmName, bool dedicated, String stellarAddress) async {
+  Future<int> create(
+      String farmName, bool dedicated, String stellarAddress) async {
     final twinId = _client.twinId!;
     final header = await createAuthHeader(
         twinId, _client.mnemonicOrSeed, _client.keypairType);
@@ -38,6 +39,7 @@ class Farms {
     if (farmName == null && stellarAddress == null) {
       return;
     }
+
     final twinId = _client.twinId!;
     final header = await createAuthHeader(
         twinId, _client.mnemonicOrSeed, _client.keypairType);
