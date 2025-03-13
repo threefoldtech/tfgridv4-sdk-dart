@@ -214,9 +214,8 @@ class UptimeReport {
 }
 
 class NodeRegistrationRequest extends NodeBase {
-  final int twinID;
+  late final int twinID;
   NodeRegistrationRequest({
-    required this.twinID,
     required int farmID,
     required List<Interface> interfaces,
     required Location location,

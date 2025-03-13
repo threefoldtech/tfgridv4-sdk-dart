@@ -24,7 +24,9 @@ class Accounts {
     );
 
     final response = await _client.post(path: '$path/', body: body.toJson());
-    return Account.fromJson(response);
+    final account = Account.fromJson(response);
+    _client.twinId = account.twinID;
+    return account;
   }
 
   Future<Account> getByTwinID(int twinID) async {
@@ -39,11 +41,12 @@ class Accounts {
     return Account.fromJson(response);
   }
 
-  Future<dynamic> update(int twinID, AccountUpdateRequest body) async {
+  Future<dynamic> update(AccountUpdateRequest body) async {
+    final twinId = _client.twinId!;
     final header = await createAuthHeader(
-        twinID, _client.mnemonicOrSeed, _client.keypairType);
+        twinId, _client.mnemonicOrSeed, _client.keypairType);
     final response = await _client.patch(
-        path: '$path/$twinID', body: body.toJson(), headers: header);
+        path: '$path/$twinId', body: body.toJson(), headers: header);
     return response;
   }
 }
