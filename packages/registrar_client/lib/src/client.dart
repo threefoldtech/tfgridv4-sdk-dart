@@ -14,6 +14,7 @@ class RegistrarClient {
   final String mnemonicOrSeed;
   final KPType keypairType;
 
+  late final int? twinId;
   late final Zos zos;
   late final Nodes nodes;
   late final Farms farms;
@@ -29,6 +30,19 @@ class RegistrarClient {
     nodes = Nodes(this);
     farms = Farms(this);
     accounts = Accounts(this);
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    final publicKey = await derivePublicKey(mnemonicOrSeed, keypairType);
+    try{
+      final account = await this.accounts.getByPublicKey(publicKey);
+      this.twinId = account.twinID;
+    } catch(e){
+       if (!e.toString().contains("404")){
+        throw e;
+       }
+    }
   }
 
   dynamic _handleResponse(http.Response response) {
