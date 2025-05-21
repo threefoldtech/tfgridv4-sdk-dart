@@ -11,24 +11,45 @@ import 'accounts.dart';
 
 class RegistrarClient {
   final String baseUrl;
-  final String mnemonicOrSeed;
   final KPType keypairType;
 
+  int? _twinId;
+  String _mnemonicOrSeed;
   late final Zos zos;
   late final Nodes nodes;
   late final Farms farms;
   late Accounts accounts;
+
+  int? get twinId => _twinId;
+  String get mnemonicOrSeed => _mnemonicOrSeed;
+
+  set twinId(int? value) {
+    _twinId = value;
+  }
 
   RegistrarClient({
     required String baseUrl,
     required String mnemonicOrSeed,
     this.keypairType = KPType.sr25519,
   })  : baseUrl = _validateBaseUrl(baseUrl),
-        mnemonicOrSeed = _validateSecret(mnemonicOrSeed) {
+        _mnemonicOrSeed = _validateSecret(mnemonicOrSeed) {
     zos = Zos(this);
     nodes = Nodes(this);
     farms = Farms(this);
     accounts = Accounts(this);
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    final publicKey = await derivePublicKey(_mnemonicOrSeed, keypairType);
+    try{
+      final account = await this.accounts.getByPublicKey(publicKey);
+      this._twinId = account.twinID;
+    } catch(e){
+       if (!e.toString().contains("404")){
+        throw e;
+       }
+    }
   }
 
   dynamic _handleResponse(http.Response response) {
@@ -122,4 +143,13 @@ class RegistrarClient {
     }
     return mnemonicOrSeed;
   }
+
+  ensureTwinIdExists(String operation) {
+    final twinId = _twinId;
+    if (twinId == null) {
+      throw Exception(
+          'TwinId is not set. Please create an account before $operation.');
+    }
+  }
 }
+

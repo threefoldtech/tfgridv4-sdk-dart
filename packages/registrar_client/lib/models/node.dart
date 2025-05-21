@@ -96,7 +96,7 @@ class Node extends NodeBase {
 }
 
 class Interface {
-  final String ips;
+  final List<String> ips;
   final String mac;
   final String name;
 
@@ -105,10 +105,9 @@ class Interface {
     required this.mac,
     required this.name,
   });
-
   factory Interface.fromJson(Map<String, dynamic> json) {
     return Interface(
-      ips: json['ips'],
+      ips: (json['ips'] as List).map((ip) => ip.toString()).toList(),
       mac: json['mac'],
       name: json['name'],
     );
@@ -214,9 +213,8 @@ class UptimeReport {
 }
 
 class NodeRegistrationRequest extends NodeBase {
-  final int twinID;
+  late final int twinID;
   NodeRegistrationRequest({
-    required this.twinID,
     required int farmID,
     required List<Interface> interfaces,
     required Location location,
@@ -300,17 +298,17 @@ class NodeFilter {
 
 class ReportUptimeRequest {
   final Duration uptime;
-  final DateTime timestamp;
+  final int timestamp;
 
   ReportUptimeRequest({
     required Duration this.uptime,
-    required DateTime this.timestamp,
+    required int this.timestamp,
   });
 
   Map<String, dynamic> toJson() {
     return {
       'uptime': uptime.inSeconds,
-      'timestamp': timestamp.toUtc().toIso8601String(),
+      'timestamp': timestamp,
     };
   }
 }

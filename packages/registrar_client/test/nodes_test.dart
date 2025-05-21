@@ -6,35 +6,32 @@ void main() async {
   group('Test Nodes', () {
     final mnemonic = generateMnemonic();
     final client = RegistrarClient(
-        baseUrl: 'http://registrar/v1', mnemonicOrSeed: mnemonic);
-    int twinID = 0;
+        baseUrl: 'https://registrar.dev4.grid.tf/v1', mnemonicOrSeed: mnemonic);
     int farmID = 0;
     int nodeID = 0;
     test('Register node', () async {
-      final account = await client.accounts.create();
-      twinID = account.twinID;
+      await client.accounts.create();
       final stellarAddress =
           "GC6CG2ME7UCJ56CEQ223QWWZ6N3UGTSXVNRJGDTE2DXUO4NQBLXZRWU5";
-      final farmName = '${DateTime.now()} - farm';
+      final farmName = '${DateTime.now().millisecondsSinceEpoch ~/ 1000}farm';
       final farmIDCreated =
-          await client.farms.create(farmName, true, stellarAddress, twinID);
+          await client.farms.create(farmName, true, stellarAddress);
       expect(farmID, isNotNull);
       expect(farmID, isA<int>());
       farmID = farmIDCreated;
 
       final node = NodeRegistrationRequest(
-        twinID: twinID,
         farmID: farmID,
         interfaces: [
           Interface(
             name: 'eth0',
             mac: '00:11:22:33:44:55',
-            ips: '192.168.1.100',
+            ips: ['192.168.1.100'],
           ),
           Interface(
             name: 'wlan0',
             mac: '66:77:88:99:AA:BB',
-            ips: '192.168.1.101',
+            ips: ['192.168.1.101'],
           ),
         ],
         location: Location(
@@ -67,7 +64,7 @@ void main() async {
     });
 
     test('List nodes', () async {
-      final nodes = await client.nodes.list(NodeFilter(twinID: twinID));
+      final nodes = await client.nodes.list(NodeFilter(twinID: client.twinId!));
       expect(nodes, isNotNull);
       expect(nodes, isA<List<Node>>());
       expect(nodes.length, greaterThan(0));
@@ -99,7 +96,7 @@ void main() async {
         virtualized: true,
       );
 
-      final updatedNode = await client.nodes.update(twinID, nodeID, node);
+      final updatedNode = await client.nodes.update(nodeID, node);
       expect(updatedNode, isNotNull);
 
       final nodeUpdated = await client.nodes.get(nodeID);
@@ -111,11 +108,11 @@ void main() async {
     test('Report node uptime', () async {
       final uptime = ReportUptimeRequest(
         uptime: Duration(hours: 1, minutes: 30),
-        timestamp: DateTime.now(),
+        timestamp: DateTime.now().millisecondsSinceEpoch ~/ 1000,
       );
 
       final response =
-          await client.nodes.reportNodeUptime(twinID, nodeID, uptime);
+          await client.nodes.reportNodeUptime(nodeID, uptime);
       expect(response, isNotNull);
 
       final node = await client.nodes.get(nodeID);
