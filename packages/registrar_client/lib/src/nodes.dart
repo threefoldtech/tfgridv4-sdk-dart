@@ -15,7 +15,7 @@ class Nodes {
     final header = await createAuthHeader(
         node.twinID, _client.mnemonicOrSeed, _client.keypairType);
     final response = await _client.post(
-        path: '$path/', body: node.toJson(), headers: header);
+        path: '$path', body: node.toJson(), headers: header);
     return response['node_id'];
   }
 

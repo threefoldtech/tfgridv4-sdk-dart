@@ -23,7 +23,7 @@ class Accounts {
       rmbEncKey: rmbEncKey,
     );
 
-    final response = await _client.post(path: '$path/', body: body.toJson());
+    final response = await _client.post(path: '$path', body: body.toJson());
     final account = Account.fromJson(response);
     _client.twinId = account.twinID;
     return account;
@@ -31,13 +31,13 @@ class Accounts {
 
   Future<Account> getByTwinID(int twinID) async {
     final response =
-        await _client.get(path: '$path/', query: {'twin_id': twinID});
+        await _client.get(path: '$path', query: {'twin_id': twinID});
     return Account.fromJson(response);
   }
 
   Future<Account> getByPublicKey(String publicKey) async {
     final response =
-        await _client.get(path: '$path/', query: {'public_key': publicKey});
+        await _client.get(path: '$path', query: {'public_key': publicKey});
     return Account.fromJson(response);
   }
 

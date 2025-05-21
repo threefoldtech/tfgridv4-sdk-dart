@@ -20,7 +20,7 @@ class Farms {
         stellarAddress: stellarAddress,
         twinID: twinId);
     final response = await _client.post(
-        path: '$path/', body: farm.toJson(), headers: header);
+        path: '$path', body: farm.toJson(), headers: header);
     return response['farm_id'];
   }
 
@@ -30,7 +30,7 @@ class Farms {
   }
 
   Future<List<Farm>> list(FarmFilter filter) async {
-    final response = await _client.get(path: '$path/', query: filter.toJson());
+    final response = await _client.get(path: '$path', query: filter.toJson());
     return List<Farm>.from(response.map((farm) => Farm.fromJson(farm)));
   }
   Future<dynamic> update(int farmID,
