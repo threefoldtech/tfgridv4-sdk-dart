@@ -42,6 +42,7 @@ class Accounts {
   }
 
   Future<dynamic> update(AccountUpdateRequest body) async {
+    _client.ensureTwinIdExists('updating an account');
     final twinId = _client.twinId!;
     final header = await createAuthHeader(
         twinId, _client.mnemonicOrSeed, _client.keypairType);

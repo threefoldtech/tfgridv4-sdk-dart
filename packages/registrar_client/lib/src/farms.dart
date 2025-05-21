@@ -8,9 +8,9 @@ class Farms {
   final String path = '/farms';
 
   Farms(this._client);
-
   Future<int> create(
       String farmName, bool dedicated, String stellarAddress) async {
+    _client.ensureTwinIdExists('creating a farm');
     final twinId = _client.twinId!;
     final header = await createAuthHeader(
         twinId, _client.mnemonicOrSeed, _client.keypairType);
@@ -33,13 +33,13 @@ class Farms {
     final response = await _client.get(path: '$path/', query: filter.toJson());
     return List<Farm>.from(response.map((farm) => Farm.fromJson(farm)));
   }
-
   Future<dynamic> update(int farmID,
       {String? farmName, String? stellarAddress}) async {
     if (farmName == null && stellarAddress == null) {
       return;
     }
 
+    _client.ensureTwinIdExists('updating a farm');
     final twinId = _client.twinId!;
     final header = await createAuthHeader(
         twinId, _client.mnemonicOrSeed, _client.keypairType);

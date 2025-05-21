@@ -10,6 +10,7 @@ class Nodes {
   Nodes(this._client);
 
   Future<int> create(NodeRegistrationRequest node) async {
+    _client.ensureTwinIdExists('creating a node');
     node.twinID = _client.twinId!;
     final header = await createAuthHeader(
         node.twinID, _client.mnemonicOrSeed, _client.keypairType);
@@ -29,6 +30,7 @@ class Nodes {
   }
 
   Future<dynamic> update(int nodeID, UpdateNodeRequest node) async {
+    _client.ensureTwinIdExists('updating a node');
     final twinId = _client.twinId!;
     final header = await createAuthHeader(
         twinId, _client.mnemonicOrSeed, _client.keypairType);
@@ -38,6 +40,7 @@ class Nodes {
   }
 
   Future<dynamic> reportNodeUptime(int nodeID, ReportUptimeRequest uptime) async {
+    _client.ensureTwinIdExists('reporting node uptime');
     final twinId = _client.twinId!;
     final header = await createAuthHeader(
         twinId, _client.mnemonicOrSeed, _client.keypairType);
