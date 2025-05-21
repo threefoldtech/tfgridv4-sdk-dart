@@ -39,16 +39,16 @@ class RegistrarClient {
     accounts = Accounts(this);
     _initialize();
   }
-
   Future<void> _initialize() async {
     final publicKey = await derivePublicKey(_mnemonicOrSeed, keypairType);
-    try{
+    try {
       final account = await this.accounts.getByPublicKey(publicKey);
       this._twinId = account.twinID;
-    } catch(e){
-       if (!e.toString().contains("404")){
-        throw e;
-       }
+    } catch (e) {
+      if (!e.toString().contains("404")) {
+        throw Exception('Failed to initialize the client: $e');
+      }
+      print('Error: $e');
     }
   }
 
@@ -152,4 +152,3 @@ class RegistrarClient {
     }
   }
 }
-
