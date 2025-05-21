@@ -9,7 +9,7 @@ void main() {
         baseUrl: 'https://registrar.dev4.grid.tf/v1', mnemonicOrSeed: generateMnemonic());
     test('Create Farm', () async {
       await client.accounts.create();
-      final farmName = '${DateTime.now().millisecondsSinceEpoch ~/ 1000}farm';
+      final farmName = '${DateTime.now().millisecondsSinceEpoch ~/ 100}farm';
       final stellarAddress =
           "GC6CG2ME7UCJ56CEQ223QWWZ6N3UGTSXVNRJGDTE2DXUO4NQBLXZRWU5";
       final farmIDCreated =

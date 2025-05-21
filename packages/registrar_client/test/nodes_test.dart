@@ -26,12 +26,12 @@ void main() async {
           Interface(
             name: 'eth0',
             mac: '00:11:22:33:44:55',
-            ips: '192.168.1.100',
+            ips: ['192.168.1.100'],
           ),
           Interface(
             name: 'wlan0',
             mac: '66:77:88:99:AA:BB',
-            ips: '192.168.1.101',
+            ips: ['192.168.1.101'],
           ),
         ],
         location: Location(
@@ -108,7 +108,7 @@ void main() async {
     test('Report node uptime', () async {
       final uptime = ReportUptimeRequest(
         uptime: Duration(hours: 1, minutes: 30),
-        timestamp: DateTime.now(),
+        timestamp: DateTime.now().millisecondsSinceEpoch ~/ 1000,
       );
 
       final response =
