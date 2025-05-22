@@ -45,6 +45,8 @@ class Node extends NodeBase {
   final int twinID;
   final String updatedAt;
   final List<UptimeReport> uptime;
+  final bool online;
+  final String lastSeen;
 
   Node({
     required this.approved,
@@ -60,6 +62,8 @@ class Node extends NodeBase {
     bool? secureBoot,
     required String serialNumber,
     bool? virtualized,
+    required this.online,
+    required this.lastSeen,
   }) : super(
           farmID: farmID,
           interfaces: interfaces,
@@ -91,12 +95,14 @@ class Node extends NodeBase {
               .map((uptime) => UptimeReport.fromJson(uptime))
               .toList()
           : [],
+      online: json['online'],
+      lastSeen: json['last_seen'],
     );
   }
 }
 
 class Interface {
-  final String ips;
+  final List<String> ips;
   final String mac;
   final String name;
 
@@ -108,7 +114,7 @@ class Interface {
 
   factory Interface.fromJson(Map<String, dynamic> json) {
     return Interface(
-      ips: json['ips'],
+      ips: List<String>.from(json['ips']),
       mac: json['mac'],
       name: json['name'],
     );
