@@ -23,27 +23,31 @@ class Accounts {
       rmbEncKey: rmbEncKey,
     );
 
-    final response = await _client.post(path: '$path/', body: body.toJson());
-    return Account.fromJson(response);
+    final response = await _client.post(path: '$path', body: body.toJson());
+    final account = Account.fromJson(response);
+    _client.twinId = account.twinID;
+    return account;
   }
 
   Future<Account> getByTwinID(int twinID) async {
     final response =
-        await _client.get(path: '$path/', query: {'twin_id': twinID});
+        await _client.get(path: '$path', query: {'twin_id': twinID});
     return Account.fromJson(response);
   }
 
   Future<Account> getByPublicKey(String publicKey) async {
     final response =
-        await _client.get(path: '$path/', query: {'public_key': publicKey});
+        await _client.get(path: '$path', query: {'public_key': publicKey});
     return Account.fromJson(response);
   }
 
-  Future<dynamic> update(int twinID, AccountUpdateRequest body) async {
+  Future<dynamic> update(AccountUpdateRequest body) async {
+    _client.ensureTwinIdExists('updating an account');
+    final twinId = _client.twinId!;
     final header = await createAuthHeader(
-        twinID, _client.mnemonicOrSeed, _client.keypairType);
+        twinId, _client.mnemonicOrSeed, _client.keypairType);
     final response = await _client.patch(
-        path: '$path/$twinID', body: body.toJson(), headers: header);
+        path: '$path/$twinId', body: body.toJson(), headers: header);
     return response;
   }
 }
